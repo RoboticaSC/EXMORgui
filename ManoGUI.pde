@@ -4,6 +4,7 @@ import processing.core.PApplet;
 // CONTROLP5 - Interfaces gráficas "prefabricadas" en Processing
 import controlP5.*;
 
+
 // ARDUINO - Uso de la Arduino con Processing (doc: http://playground.arduino.cc/Interfacing/Processing)
 import cc.arduino.*;
 
@@ -23,8 +24,8 @@ static ControlP5 cp5;
     size(600, 300);
     
     // Inicialización de la Arduino
-    println("Arduino list: " + Arduino.list()[2]); // DEBUG
-    arduino = new Arduino(this, Arduino.list()[2]);
+    println("Arduino list: " + Arduino.list()[1]); // DEBUG
+    arduino = new Arduino(this, Arduino.list()[1]);
     
     // Inicialización de la interfaz ControlP5
     cp5 = new ControlP5(this);
@@ -46,7 +47,9 @@ static ControlP5 cp5;
    * @name draw
    */
   void draw() {
-    
+    cp5.getController("indice1").setValue(int(map(arduino.analogRead(1), 0, 1023, 0, 180)));
+    cp5.getController("indice2").setValue(int(map(arduino.analogRead(2), 0, 1023, 0, 180)));
+    // Mirar esto para el suavizado de las entradas: https://processing.org/examples/easing.html
   }
   
   void indice1(float val){
