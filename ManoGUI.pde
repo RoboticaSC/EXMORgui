@@ -12,7 +12,7 @@ import processing.serial.*;
 
 public class PFrame extends JFrame {
   public PFrame() {
-    setBounds(0, 0, 100, 200);
+    setBounds(0, 0, 400, 300);
     additionalApplet a = new additionalApplet();
     add(a);
     a.init();
@@ -21,15 +21,20 @@ public class PFrame extends JFrame {
 }
 
 public class additionalApplet extends PApplet {
-  public void setup() {
-    size(100, 512);
+  void setup() {
     background(0);
+  }
+
+  void draw() {
+
   }
 }
 
 static Arduino arduino;
 static ControlP5 cp5;
-  
+
+short chosenCOMIndex = 0; // Número de índice del array de puertos COM donde está la Arduino
+
 /**
  * Función principal que ejecuta su código al iniciar el programa una única vez
  * 
@@ -41,21 +46,28 @@ void setup() {
   size(600, 300);
   
   // Inicialización de la Arduino
-  println("Arduino list: " + Arduino.list()[1]); // DEBUG
-  arduino = new Arduino(this, Arduino.list()[1]);
-  
+  println("Arduino list: " + Arduino.list()[chosenCOMIndex]); // DEBUG
+  arduino = new Arduino(this, Arduino.list()[chosenCOMIndex]);
+
   // Inicialización de la interfaz ControlP5
   cp5 = new ControlP5(this);
   
-  cp5.addSlider("indice1")
-    .setPosition(10, 10)
-    .setSize(100, 20)
-    .setRange(0, 180);
-    
-  cp5.addSlider("indice2")
+  Slider ind1 = cp5.addSlider("indice1")
     .setPosition(10, 40)
     .setSize(100, 20)
     .setRange(0, 180);
+    
+  Slider ind2 = cp5.addSlider("indice2")
+    .setPosition(10, 70)
+    .setSize(100, 20)
+    .setRange(0, 180);
+
+  PImage settImg = loadImage("dgear.png");
+  Button sett =  cp5.addButton("opciones")
+    .setPosition(560, 0)
+    .setSize(30, 30)
+    .setLabelVisible(false);
+    //.setImage(settImg);
 }
 
 /**
@@ -67,6 +79,14 @@ void draw() {
   cp5.getController("indice1").setValue(int(map(arduino.analogRead(1), 0, 1023, 0, 180)));
   cp5.getController("indice2").setValue(int(map(arduino.analogRead(2), 0, 1023, 0, 180)));
   // Mirar esto para el suavizado de las entradas: https://processing.org/examples/easing.html
+  stroke(0);
+  fill(0);
+  rect(0, 0, 600, 30);
+  fill(150);
+  text("ManoGUI | ", 5, 20);
+  fill(255);
+  textSize(15);
+  text("Arduino connected on: " + Arduino.list()[chosenCOMIndex], 88, 20);
 }
 
 
