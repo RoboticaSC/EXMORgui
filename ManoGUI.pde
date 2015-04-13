@@ -10,6 +10,9 @@ import cc.arduino.*;
 // PROCESSING SERIAL - Requisito de la librería de Arduino (comunicación vía serial)
 import processing.serial.*;
 
+static Arduino arduino;
+static ControlP5 cp5;
+
 public class PFrame extends JFrame {
   public PFrame() {
     setBounds(0, 0, 400, 300);
@@ -21,17 +24,29 @@ public class PFrame extends JFrame {
 }
 
 public class additionalApplet extends PApplet {
+  ControlP5 comcp5;
+
   void setup() {
-    background(0);
+    comcp5 = new ControlP5(this);
+    background(150);
+
+    // Generación dinámica de botones (tantos como puertos COM)
+    short n;
+    int length = 0;
+    length = Arduino.list().length;
+    for(n = 0; n <= length; n++) {
+      comcp5.addButton("com" + n)
+        .setPosition(10, 40 * n)
+        .setSize(200, 30)
+        .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+        println("Created button 'com " + n + "'");
+    }
   }
 
   void draw() {
 
   }
 }
-
-static Arduino arduino;
-static ControlP5 cp5;
 
 short chosenCOMIndex = 0; // Número de índice del array de puertos COM donde está la Arduino
 
@@ -43,7 +58,7 @@ short chosenCOMIndex = 0; // Número de índice del array de puertos COM donde e
 void setup() {
   // Configuración incial de la ventana
   background(100);
-  size(600, 300);
+  size(650, 450);
   
   // Inicialización de la Arduino
   println("Arduino list: " + Arduino.list()[chosenCOMIndex]); // DEBUG
@@ -51,23 +66,23 @@ void setup() {
 
   // Inicialización de la interfaz ControlP5
   cp5 = new ControlP5(this);
-  
+
   Slider ind1 = cp5.addSlider("indice1")
-    .setPosition(10, 40)
-    .setSize(100, 20)
+    .setPosition(10, 213)
+    .setSize(200, 20)
     .setRange(0, 180);
     
   Slider ind2 = cp5.addSlider("indice2")
-    .setPosition(10, 70)
-    .setSize(100, 20)
+    .setPosition(10, 243)
+    .setSize(200, 20)
     .setRange(0, 180);
 
-  PImage settImg = loadImage("dgear.png");
-  Button sett =  cp5.addButton("opciones")
-    .setPosition(560, 0)
+  Button sett = cp5.addButton("opciones")
+    .setPosition(628, 7)
     .setSize(30, 30)
-    .setLabelVisible(false);
-    //.setImage(settImg);
+    .setLabelVisible(false)
+    .setImage(loadImage("gearw.png")) // De Flaticon.com - Egor Rumyantsev
+    .setColorBackground(200);
 }
 
 /**
@@ -76,17 +91,28 @@ void setup() {
  * @name draw
  */
 void draw() {
+  // TO-DO: Convertir fuente a ttf
+  PFont OpenSans = loadFont("OpenSans-Regular.vlw");
+
+  image(loadImage("user.png"), 10, 50, 100, 123);
+  textFont(OpenSans, 22);
+  text("Nombre Apellido Apellido", 120, 90);
+  textSize(17);
+  fill(150);
+  text("#123456", 130, 115);
+  text("Afección", 130, 135);
+
   cp5.getController("indice1").setValue(int(map(arduino.analogRead(1), 0, 1023, 0, 180)));
   cp5.getController("indice2").setValue(int(map(arduino.analogRead(2), 0, 1023, 0, 180)));
   // Mirar esto para el suavizado de las entradas: https://processing.org/examples/easing.html
   stroke(0);
   fill(0);
-  rect(0, 0, 600, 30);
+  rect(0, 0, 650, 30);
   fill(150);
+  textSize(15);
   text("ManoGUI | ", 5, 20);
   fill(255);
-  textSize(15);
-  text("Arduino connected on: " + Arduino.list()[chosenCOMIndex], 88, 20);
+  text("Arduino configurada en: " + Arduino.list()[chosenCOMIndex], 88, 20);
 }
 
 
@@ -110,8 +136,6 @@ void indice2(float val) {
   arduino.servoWrite(10, int(val));
 }
 
-
-// FUNCIÓN DE PRUEBA DE LAS VENTANAS MÚLTIPLES
-void mousePressed() {
+void opciones(int val) {
   PFrame f = new PFrame();
 }
