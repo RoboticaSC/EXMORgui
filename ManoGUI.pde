@@ -13,6 +13,11 @@ import processing.serial.*;
 static Arduino arduino;
 static ControlP5 cp5;
 
+int pi1 = 0;  // Valor potenciómetro índice 1; falange proximal (0-1023)
+int pi2 = 0;  // Valor potenciómetro índice 2; falange media (0-1023)
+int rx = 0, ry = 0, sx = 0, sy = 0;
+float alpha = 0, beta = 0;  // Ángulos (en radianes) de flexión de las falanges de cada dedo
+
 public class PFrame extends JFrame {
   public PFrame() {
     setBounds(0, 0, 400, 300);
@@ -49,7 +54,7 @@ public class additionalApplet extends PApplet {
 
 }
 
-short chosenCOMIndex = 1; // Número de índice del array de puertos COM donde está la Arduino
+short chosenCOMIndex = 2; // Número de índice del array de puertos COM donde está la Arduino
 
 /**
  * Función principal que ejecuta su código al iniciar el programa una única vez
@@ -58,7 +63,6 @@ short chosenCOMIndex = 1; // Número de índice del array de puertos COM donde e
  */
 void setup() {
   // Configuración incial de la ventana
-  background(100);
   size(650, 450);
   
   // Inicialización de la Arduino
@@ -92,8 +96,14 @@ void setup() {
  * @name draw
  */
 void draw() {
+  background(100);
+
   // TO-DO: Convertir fuente a ttf
   PFont OpenSans = loadFont("OpenSans-Regular.vlw");
+
+  // Lectura de valores desde la Arduino
+  pi1 = arduino.analogRead(1);
+  pi2 = arduino.analogRead(2);
 
   image(loadImage("user.png"), 10, 50, 100, 123);
   textFont(OpenSans, 22);
@@ -106,6 +116,7 @@ void draw() {
   cp5.getController("indice1").setValue(int(map(arduino.analogRead(1), 0, 1023, 0, 180)));
   cp5.getController("indice2").setValue(int(map(arduino.analogRead(2), 0, 1023, 0, 180)));
   // Mirar esto para el suavizado de las entradas: https://processing.org/examples/easing.html
+
   stroke(0);
   fill(0);
   rect(0, 0, 650, 30);
@@ -114,6 +125,19 @@ void draw() {
   text("ManoGUI | ", 5, 20);
   fill(255);
   text("Arduino configurada en: " + Arduino.list()[chosenCOMIndex], 88, 20);
+
+  strokeWeight(30);
+  stroke(255, 160);
+
+  // Cálculo y muestra de la representación gráfica del dedo
+  alpha = map(pi1, 0, 1023, 0, 2 * PI);
+  ry = int(sin(alpha) * 80);
+  rx = int(cos(alpha) * 80);
+  line(350, 200, rx + 350, ry + 200);
+  beta = map(pi2, 0, 1023, 0, 2 * PI) + alpha;
+  sy = int(sin(beta) * 80) + ry;
+  sx = int(cos(beta) * 80) + rx;
+  line(rx + 350, ry + 200, sx + 350, sy + 200);
 }
 
 
