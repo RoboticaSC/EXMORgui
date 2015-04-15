@@ -36,7 +36,7 @@ public class additionalApplet extends PApplet {
     length = Arduino.list().length;
     for(n = 0; n <= length; n++) {
       comcp5.addButton("com" + n)
-        .setPosition(10, 40 * n)
+        .setPosition(100, 150 + 40 * n)
         .setSize(200, 30)
         .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
         println("Created button 'com " + n + "'");
@@ -46,9 +46,10 @@ public class additionalApplet extends PApplet {
   void draw() {
 
   }
+
 }
 
-short chosenCOMIndex = 0; // Número de índice del array de puertos COM donde está la Arduino
+short chosenCOMIndex = 1; // Número de índice del array de puertos COM donde está la Arduino
 
 /**
  * Función principal que ejecuta su código al iniciar el programa una única vez
