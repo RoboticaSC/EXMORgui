@@ -41,7 +41,7 @@ public class additionalApplet extends PApplet {
     length = Arduino.list().length;
     for(n = 0; n <= length; n++) {
       comcp5.addButton("com" + n)
-        .setPosition(100, 150 + 40 * n)
+        .setPosition(100, 120 + 40 * n)
         .setSize(200, 30)
         .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
         println("Created button 'com " + n + "'");
@@ -54,7 +54,7 @@ public class additionalApplet extends PApplet {
 
 }
 
-short chosenCOMIndex = 2; // Número de índice del array de puertos COM donde está la Arduino
+short chosenCOMIndex = 1; // Número de índice del array de puertos COM donde está la Arduino
 
 /**
  * Función principal que ejecuta su código al iniciar el programa una única vez
@@ -63,7 +63,7 @@ short chosenCOMIndex = 2; // Número de índice del array de puertos COM donde e
  */
 void setup() {
   // Configuración incial de la ventana
-  size(650, 450);
+  size(650, 460);
   
   // Inicialización de la Arduino
   println("Arduino list: " + Arduino.list()[chosenCOMIndex]); // DEBUG
@@ -79,6 +79,36 @@ void setup() {
     
   Slider ind2 = cp5.addSlider("indice2")
     .setPosition(10, 243)
+    .setSize(200, 20)
+    .setRange(0, 180);
+
+  Slider cor1 = cp5.addSlider("corazon1")
+    .setPosition(10, 273)
+    .setSize(200, 20)
+    .setRange(0, 180);
+    
+  Slider cor2 = cp5.addSlider("corazon2")
+    .setPosition(10, 303)
+    .setSize(200, 20)
+    .setRange(0, 180);
+
+  Slider anu1 = cp5.addSlider("anular1")
+    .setPosition(10, 333)
+    .setSize(200, 20)
+    .setRange(0, 180);
+    
+  Slider anu2 = cp5.addSlider("anular2")
+    .setPosition(10, 363)
+    .setSize(200, 20)
+    .setRange(0, 180);
+
+  Slider men1 = cp5.addSlider("menique1")
+    .setPosition(10, 393)
+    .setSize(200, 20)
+    .setRange(0, 180);
+    
+  Slider men2 = cp5.addSlider("menique2")
+    .setPosition(10, 423)
     .setSize(200, 20)
     .setRange(0, 180);
 
@@ -119,7 +149,7 @@ void draw() {
 
   stroke(0);
   fill(0);
-  rect(0, 0, 650, 30);
+  rect(0, 0, 650, 15);
   fill(150);
   textSize(15);
   text("ManoGUI | ", 5, 20);
@@ -140,12 +170,11 @@ void draw() {
   line(rx + 350, ry + 200, sx + 350, sy + 200);
 }
 
-
 /**
   * Gestor de eventos del slider "indice1" (se ejecuta cada vez que el valor del slider cambia)
   *
   * @name indice1
-  * @param val  nuevo valor del slider
+  * @param val nuevo valor del slider
   */
 void indice1(float val) {
   arduino.servoWrite(9, int(val));
@@ -155,12 +184,81 @@ void indice1(float val) {
   * Gestor de eventos del slider "indice2" (se ejecuta cada vez que el valor del slider cambia)
   *
   * @name indice2
-  * @param val  nuevo valor del slider
+  * @param val nuevo valor del slider
   */
 void indice2(float val) {
+  arduino.servoWrite(10, int(val));
+}
+
+/**
+  * Gestor de eventos del slider "corazon1" (se ejecuta cada vez que el valor del slider cambia)
+  *
+  * @name corazon1
+  * @param val nuevo valor del slider
+  */
+void corazon1(float val) {
+  arduino.servoWrite(9, int(val));
+}
+
+/**
+  * Gestor de eventos del slider "corazon2" (se ejecuta cada vez que el valor del slider cambia)
+  *
+  * @name corazon2
+  * @param val nuevo valor del slider
+  */
+void corazon2(float val) {
+  arduino.servoWrite(10, int(val));
+}
+
+/**
+  * Gestor de eventos del slider "anular1" (se ejecuta cada vez que el valor del slider cambia)
+  *
+  * @name anular1
+  * @param val nuevo valor del slider
+  */
+void anular1(float val) {
+  arduino.servoWrite(9, int(val));
+}
+
+/**
+  * Gestor de eventos del slider "anular2" (se ejecuta cada vez que el valor del slider cambia)
+  *
+  * @name anular2
+  * @param val nuevo valor del slider
+  */
+void anular2(float val) {
+  arduino.servoWrite(10, int(val));
+}
+
+/**
+  * Gestor de eventos del slider "menique1" (se ejecuta cada vez que el valor del slider cambia)
+  *
+  * @name menique1
+  * @param val nuevo valor del slider
+  */
+void menique1(float val) {
+  arduino.servoWrite(9, int(val));
+}
+
+/**
+  * Gestor de eventos del slider "menique2" (se ejecuta cada vez que el valor del slider cambia)
+  *
+  * @name menique2
+  * @param val nuevo valor del slider
+  */
+void menique2(float val) {
   arduino.servoWrite(10, int(val));
 }
 
 void opciones(int val) {
   PFrame f = new PFrame();
 }
+
+/*
+    16/04/15 - Jueves
+    TO-DO:
+      - Calibrar la relación analógica-grados
+      - Evitar que se mueva el anillo de la falange distal, especialmente en dedos finos
+      - Mejoras en el cableado
+      - Menú puertos COM funcional (y con el COM real, no el index number)
+*/
