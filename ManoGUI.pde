@@ -13,11 +13,6 @@ import processing.serial.*;
 static Arduino arduino;
 static ControlP5 cp5;
 
-int pi1 = 0;  // Valor potenciómetro índice 1; falange proximal (0-1023)
-int pi2 = 0;  // Valor potenciómetro índice 2; falange media (0-1023)
-int rx = 0, ry = 0, sx = 0, sy = 0;
-float alpha = 0, beta = 0;  // Ángulos (en radianes) de flexión de las falanges de cada dedo
-
 public class PFrame extends JFrame {
   public PFrame() {
     setBounds(0, 0, 400, 300);
@@ -120,6 +115,8 @@ void setup() {
     .setColorBackground(200);
 }
 
+short i = 0;  // Contador para bucles
+
 /**
  * Función principal que ejecuta su código en un bucle infinito hasta que el programa se cierra
  * 
@@ -131,10 +128,6 @@ void draw() {
   // TO-DO: Convertir fuente a ttf
   PFont OpenSans = loadFont("OpenSans-Regular.vlw");
 
-  // Lectura de valores desde la Arduino
-  pi1 = arduino.analogRead(1);
-  pi2 = arduino.analogRead(2);
-
   image(loadImage("user.png"), 10, 50, 100, 123);
   textFont(OpenSans, 22);
   text("Nombre Apellido Apellido", 120, 90);
@@ -142,10 +135,6 @@ void draw() {
   fill(150);
   text("#123456", 130, 115);
   text("Afección", 130, 135);
-
-  cp5.getController("indice1").setValue(int(map(arduino.analogRead(1), 0, 1023, 0, 180)));
-  cp5.getController("indice2").setValue(int(map(arduino.analogRead(2), 0, 1023, 0, 180)));
-  // Mirar esto para el suavizado de las entradas: https://processing.org/examples/easing.html
 
   stroke(0);
   fill(0);
@@ -155,19 +144,10 @@ void draw() {
   text("ManoGUI | ", 5, 20);
   fill(255);
   text("Arduino configurada en: " + Arduino.list()[chosenCOMIndex], 88, 20);
-
-  strokeWeight(30);
-  stroke(255, 160);
-
-  // Cálculo y muestra de la representación gráfica del dedo
-  alpha = map(pi1, 0, 1023, 0, 2 * PI);
-  ry = int(sin(alpha) * 80);
-  rx = int(cos(alpha) * 80);
-  line(350, 200, rx + 350, ry + 200);
-  beta = map(pi2, 0, 1023, 0, 2 * PI) + alpha;
-  sy = int(sin(beta) * 80) + ry;
-  sx = int(cos(beta) * 80) + rx;
-  line(rx + 350, ry + 200, sx + 350, sy + 200);
+  
+  for(i = 0; i < 4; i++) { // Representación gráfica de todos los dedos
+    imprimirDedo(i);
+  }
 }
 
 /**
@@ -197,7 +177,7 @@ void indice2(float val) {
   * @param val nuevo valor del slider
   */
 void corazon1(float val) {
-  arduino.servoWrite(9, int(val));
+  arduino.servoWrite(11, int(val));
 }
 
 /**
@@ -207,7 +187,7 @@ void corazon1(float val) {
   * @param val nuevo valor del slider
   */
 void corazon2(float val) {
-  arduino.servoWrite(10, int(val));
+  arduino.servoWrite(12, int(val));
 }
 
 /**
@@ -217,7 +197,7 @@ void corazon2(float val) {
   * @param val nuevo valor del slider
   */
 void anular1(float val) {
-  arduino.servoWrite(9, int(val));
+  arduino.servoWrite(13, int(val));
 }
 
 /**
@@ -227,7 +207,7 @@ void anular1(float val) {
   * @param val nuevo valor del slider
   */
 void anular2(float val) {
-  arduino.servoWrite(10, int(val));
+  arduino.servoWrite(14, int(val));
 }
 
 /**
@@ -237,7 +217,7 @@ void anular2(float val) {
   * @param val nuevo valor del slider
   */
 void menique1(float val) {
-  arduino.servoWrite(9, int(val));
+  arduino.servoWrite(15, int(val));
 }
 
 /**
@@ -247,11 +227,47 @@ void menique1(float val) {
   * @param val nuevo valor del slider
   */
 void menique2(float val) {
-  arduino.servoWrite(10, int(val));
+  arduino.servoWrite(16, int(val));
 }
 
 void opciones(int val) {
   PFrame f = new PFrame();
+}
+
+/**
+  * Realiza la lectura de un dedo y muestra su representación gráfica con el color correspondiente
+  *
+  * @name imprimirDedo
+  * @param dedo Número de 0 a 3, que representa el índice del dedo, siendo 0 el índice, y 3 el meñique
+  */
+void imprimirDedo(short dedo) {
+  int[] colors = { #FF312E, #104547, #000103, #191D32, #FFFFFA };
+  String[] dedos = { "indice", "corazon", "anular", "menique" };
+  int p1 = 0;  // Valor potenciómetro índice 1; falange proximal (0-1023)
+  int p2 = 0;  // Valor potenciómetro índice 2; falange media (0-1023)
+  int rx = 0, ry = 0, sx = 0, sy = 0;
+  float alpha = 0, beta = 0;  // Ángulos (en radianes) de flexión de las falanges de cada dedo
+
+  // Lectura de valores desde la Arduino
+  p1 = arduino.analogRead(dedo * 2 + 1);
+  p2 = arduino.analogRead(dedo * 2 + 2);
+
+  cp5.getController(dedos[dedo] + "1").setValue(int(map(p1, 0, 1023, 0, 180)));
+  cp5.getController(dedos[dedo] + "2").setValue(int(map(p2, 0, 1023, 0, 180)));
+  // Mirar esto para el suavizado de las entradas: https://processing.org/examples/easing.html
+
+  strokeWeight(30);
+  stroke(colors[dedo], 160);
+
+  // Cálculo y muestra de la representación gráfica del dedo
+  alpha = map(p1, 0, 1023, 0, 2 * PI);
+  ry = int(sin(alpha) * 80);
+  rx = int(cos(alpha) * 80);
+  line(350, 200, rx + 350, ry + 200);
+  beta = map(p2, 0, 1023, 0, 2 * PI) + alpha;
+  sy = int(sin(beta) * 80) + ry;
+  sx = int(cos(beta) * 80) + rx;
+  line(rx + 350, ry + 200, sx + 350, sy + 200);
 }
 
 /*
@@ -261,4 +277,11 @@ void opciones(int val) {
       - Evitar que se mueva el anillo de la falange distal, especialmente en dedos finos
       - Mejoras en el cableado
       - Menú puertos COM funcional (y con el COM real, no el index number)
+*/
+
+/*
+    08/05/15 - Viernes
+    TO-DO:
+      - Organizar en funciones la lectura y muestreo de la representación del dedoç
+      - Poner el nombre real del COM en el selector de puerto, y no el número de índice
 */
