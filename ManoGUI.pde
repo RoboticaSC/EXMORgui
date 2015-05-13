@@ -28,28 +28,37 @@ public class additionalApplet extends PApplet {
 
   void setup() {
     comcp5 = new ControlP5(this);
-    background(150);
 
     // Generación dinámica de botones (tantos como puertos COM)
     short n;
     int length = 0;
     length = Arduino.list().length;
-    for(n = 0; n <= length; n++) {
-      comcp5.addButton("com" + n)
-        .setPosition(100, 120 + 40 * n)
-        .setSize(200, 30)
-        .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-        println("Created button 'com " + n + "'");
+
+    Group settGroup = comcp5.addGroup("settings")
+      .setPosition(20, 25)
+      .setSize(345, 220)
+      .disableCollapse()
+      .setBackgroundColor(180);
+
+    ListBox comLB = comcp5.addListBox("puertos")
+      .setPosition(30, 45)
+      .setSize(200, 120)
+      .setItemHeight(30);
+
+    comLB.valueLabel().style().marginTop = 10;
+
+    for(n = 0; n < length; n++) { // 1 elemento es 1 en length, por lo que se utiliza < y no <=
+      comLB.addItem(Arduino.list()[n], n);
     }
   }
 
   void draw() {
-
+    background(150);
   }
 
 }
 
-short chosenCOMIndex = 1; // Número de índice del array de puertos COM donde está la Arduino
+int chosenCOMIndex = Arduino.list().length - 1; // Número de índice del array de puertos COM donde está la Arduino
 
 /**
  * Función principal que ejecuta su código al iniciar el programa una única vez
@@ -269,19 +278,3 @@ void imprimirDedo(short dedo) {
   sx = int(cos(beta) * 80) + rx;
   line(rx + 350, ry + 200, sx + 350, sy + 200);
 }
-
-/*
-    16/04/15 - Jueves
-    TO-DO:
-      - Calibrar la relación analógica-grados
-      - Evitar que se mueva el anillo de la falange distal, especialmente en dedos finos
-      - Mejoras en el cableado
-      - Menú puertos COM funcional (y con el COM real, no el index number)
-*/
-
-/*
-    08/05/15 - Viernes
-    TO-DO:
-      - Organizar en funciones la lectura y muestreo de la representación del dedoç
-      - Poner el nombre real del COM en el selector de puerto, y no el número de índice
-*/
