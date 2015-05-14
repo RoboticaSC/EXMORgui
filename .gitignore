@@ -4,3 +4,6 @@
 
 # Build files
 build-tmp
+
+# Local data folder
+data/local/*
