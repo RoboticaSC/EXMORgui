@@ -5,8 +5,8 @@ TO-DO List
 
 ###Importante
 - [ ] Calibrar relación analógica-grados
-- [ ] Hacer funcional el menú de selección de puerto COM
-- [ ] Mostrar el puerto COM real, y no el número de índice
+- [x] Hacer funcional el menú de selección de puerto COM
+- [x] Mostrar el puerto COM real, y no el número de índice
 
 ###Funcionalidades extra
 - [ ] Gráficas

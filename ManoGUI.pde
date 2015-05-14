@@ -40,12 +40,12 @@ public class additionalApplet extends PApplet {
       .disableCollapse()
       .setBackgroundColor(180);
 
-    ListBox comLB = comcp5.addListBox("puertos")
-      .setPosition(30, 45)
-      .setSize(200, 120)
+    DropdownList comLB = comcp5.addDropdownList("puertos")
+      .setPosition(30, 65)
+      .setSize(200, 120
+)      .setBarHeight(30)
       .setItemHeight(30);
-
-    comLB.valueLabel().style().marginTop = 10;
+    comLB.captionLabel().style().marginTop = 10;
 
     for(n = 0; n < length; n++) { // 1 elemento es 1 en length, por lo que se utiliza < y no <=
       comLB.addItem(Arduino.list()[n], n);
@@ -54,6 +54,16 @@ public class additionalApplet extends PApplet {
 
   void draw() {
     background(150);
+  }
+
+  void controlEvent(ControlEvent theEvent) {
+    if(theEvent.isGroup()) {
+      String groupName =  theEvent.group().name();
+
+      if(groupName == "puertos") {  // Desplegable de los puertos COM, en el menú de opciones
+        chosenCOMIndex = (int)theEvent.group().value();
+      }
+    }
   }
 
 }
@@ -134,7 +144,6 @@ short i = 0;  // Contador para bucles
 void draw() {
   background(100);
 
-  // TO-DO: Convertir fuente a ttf
   PFont OpenSans = loadFont("OpenSans-Regular.vlw");
 
   image(loadImage("user.png"), 10, 50, 100, 123);
@@ -160,87 +169,36 @@ void draw() {
 }
 
 /**
-  * Gestor de eventos del slider "indice1" (se ejecuta cada vez que el valor del slider cambia)
+  * Gestor de eventos de todos los elementos del programa
   *
-  * @name indice1
-  * @param val nuevo valor del slider
+  * @name controlEvent
+  * @param theEvent evento que ha invocado la función
   */
-void indice1(float val) {
-  arduino.servoWrite(9, int(val));
-}
+void controlEvent(ControlEvent theEvent) {
+  if(theEvent.isController()) {
+    String controllerName = theEvent.controller().name();
 
-/**
-  * Gestor de eventos del slider "indice2" (se ejecuta cada vez que el valor del slider cambia)
-  *
-  * @name indice2
-  * @param val nuevo valor del slider
-  */
-void indice2(float val) {
-  arduino.servoWrite(10, int(val));
-}
-
-/**
-  * Gestor de eventos del slider "corazon1" (se ejecuta cada vez que el valor del slider cambia)
-  *
-  * @name corazon1
-  * @param val nuevo valor del slider
-  */
-void corazon1(float val) {
-  arduino.servoWrite(11, int(val));
-}
-
-/**
-  * Gestor de eventos del slider "corazon2" (se ejecuta cada vez que el valor del slider cambia)
-  *
-  * @name corazon2
-  * @param val nuevo valor del slider
-  */
-void corazon2(float val) {
-  arduino.servoWrite(12, int(val));
-}
-
-/**
-  * Gestor de eventos del slider "anular1" (se ejecuta cada vez que el valor del slider cambia)
-  *
-  * @name anular1
-  * @param val nuevo valor del slider
-  */
-void anular1(float val) {
-  arduino.servoWrite(13, int(val));
-}
-
-/**
-  * Gestor de eventos del slider "anular2" (se ejecuta cada vez que el valor del slider cambia)
-  *
-  * @name anular2
-  * @param val nuevo valor del slider
-  */
-void anular2(float val) {
-  arduino.servoWrite(14, int(val));
-}
-
-/**
-  * Gestor de eventos del slider "menique1" (se ejecuta cada vez que el valor del slider cambia)
-  *
-  * @name menique1
-  * @param val nuevo valor del slider
-  */
-void menique1(float val) {
-  arduino.servoWrite(15, int(val));
-}
-
-/**
-  * Gestor de eventos del slider "menique2" (se ejecuta cada vez que el valor del slider cambia)
-  *
-  * @name menique2
-  * @param val nuevo valor del slider
-  */
-void menique2(float val) {
-  arduino.servoWrite(16, int(val));
-}
-
-void opciones(int val) {
-  PFrame f = new PFrame();
+    // Sliders de los dedos
+    if(controllerName == "indice1") {
+      arduino.servoWrite(9, int(theEvent.controller().value()));
+    } else if(controllerName == "indice2") {
+      arduino.servoWrite(10, int(theEvent.controller().value()));
+    } else if(controllerName == "corazon1") {
+      arduino.servoWrite(11, int(theEvent.controller().value()));
+    } else if(controllerName == "corazon2") {
+      arduino.servoWrite(12, int(theEvent.controller().value()));
+    } else if(controllerName == "anular1") {
+      arduino.servoWrite(13, int(theEvent.controller().value()));
+    } else if(controllerName == "anular2") {
+      arduino.servoWrite(14, int(theEvent.controller().value()));
+    } else if(controllerName == "menique1") {
+      arduino.servoWrite(15, int(theEvent.controller().value()));
+    } else if(controllerName == "menique2") {
+      arduino.servoWrite(16, int(theEvent.controller().value()));
+    } else if(controllerName == "opciones") { // Botón de opciones (rueda dentada)
+      PFrame f = new PFrame();
+    }
+  }
 }
 
 /**
