@@ -159,9 +159,9 @@ void draw() {
   rect(0, 0, 650, 15);
   fill(150);
   textSize(15);
-  text("ManoGUI | ", 5, 20);
+  text("EXMOR | ", 5, 20);
   fill(255);
-  text("Arduino configurada en: " + Arduino.list()[chosenCOMIndex], 88, 20);
+  text("Arduino configurada en: " + Arduino.list()[chosenCOMIndex], 75, 20);
   
   for(i = 0; i < 4; i++) { // Representación gráfica de todos los dedos
     imprimirDedo(i);

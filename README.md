@@ -1,5 +1,5 @@
-ManoGUI
-=======
+EXMORgui
+========
 
 Interfaz gráfica para el proyecto del exoesqueleto robótico rehabilitador de manos.
 
