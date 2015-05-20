@@ -132,6 +132,11 @@ void setup() {
     .setLabelVisible(false)
     .setImage(loadImage("gearw.png")) // De Flaticon.com - Egor Rumyantsev
     .setColorBackground(200);
+
+  Button graph = cp5.addButton("graficas")
+    .setPosition(550, 45)
+    .setSize(80, 40)
+    .align(ControlP5.CENTER, ControlP5.CENTER, ControlP5.CENTER, ControlP5.CENTER);
 }
 
 short i = 0;  // Contador para bucles
