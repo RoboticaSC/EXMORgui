@@ -10,6 +10,8 @@ import cc.arduino.*;
 // PROCESSING SERIAL - Requisito de la librería de Arduino (comunicación vía serial)
 import processing.serial.*;
 
+import java.awt.event.*;
+
 Arduino arduino;
 ControlP5 cp5;
 
@@ -27,15 +29,25 @@ public class PFrame extends JFrame {
     switch(frame) {
       case 1:
         setBounds(0, 0, 400, 300);
-        settingsApplet s = new settingsApplet();
+        final settingsApplet s = new settingsApplet();
         add(s);
         s.init();
+        addWindowListener(new WindowAdapter() {
+          public void windowClosing(WindowEvent evt) {
+            s.dispose();
+          }
+        });
         break;
       case 2:
         setBounds(0, 0, 600, 400);
-        graphsApplet g = new graphsApplet();
+        final graphsApplet g = new graphsApplet();
         add(g);
         g.init();
+        addWindowListener(new WindowAdapter() {
+          public void windowClosing(WindowEvent evt) {
+            g.dispose();
+          }
+        });
         break;
     }
     show();
@@ -90,11 +102,9 @@ public class settingsApplet extends PApplet {
 public class graphsApplet extends PApplet {
 
   void setup() {
-
   }
 
   void draw() {
-    //point();
   }
 
 }
@@ -170,8 +180,6 @@ void setup() {
     .align(ControlP5.CENTER, ControlP5.CENTER, ControlP5.CENTER, ControlP5.CENTER);
 }
 
-short i = 0;  // Contador para bucles
-
 /**
  * Función principal que ejecuta su código en un bucle infinito hasta que el programa se cierra
  * 
@@ -199,7 +207,7 @@ void draw() {
   fill(255);
   text("Arduino configurada en: " + Arduino.list()[chosenCOMIndex], 75, 20);
   
-  for(i = 0; i < 4; i++) { // Representación gráfica de todos los dedos
+  for(short i = 0; i < 4; i++) { // Representación gráfica de todos los dedos
     imprimirDedo(i);
   }
 }
@@ -275,10 +283,17 @@ void imprimirDedo(short dedo) {
   line(rx + 350, ry + 200, sx + 350, sy + 200);
 }
 
+/**
+  * Espera hasta que transcurra una determinada cantidad de segundos
+  *
+  * @name sleep
+  * @param value Valor en milisegundos de la espera
+  */
 void sleep(int value) {
   boolean done = false;
   int start = millis();
+  println("START: "+ start);
   while(done != true) {
-    if(start - millis() > value) done = true;
+    if(millis() - start > value) done = true;
   }
 }
