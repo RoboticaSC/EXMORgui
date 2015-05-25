@@ -10,12 +10,13 @@ import cc.arduino.*;
 // PROCESSING SERIAL - Requisito de la librería de Arduino (comunicación vía serial)
 import processing.serial.*;
 
-static Arduino arduino;
-static ControlP5 cp5;
+Arduino arduino;
+ControlP5 cp5;
 
 int[] p = new int[8];
 
 public class PFrame extends JFrame {
+
   /**
    * Constructor de la clase PFrame
    *
@@ -42,6 +43,7 @@ public class PFrame extends JFrame {
 }
 
 public class settingsApplet extends PApplet {
+
   ControlP5 comcp5;
 
   void setup() {
@@ -83,7 +85,6 @@ public class settingsApplet extends PApplet {
       }
     }
   }
-
 }
 
 public class graphsApplet extends PApplet {
@@ -92,7 +93,7 @@ public class graphsApplet extends PApplet {
 
   }
 
-  void loop() {
+  void draw() {
     //point();
   }
 
@@ -275,7 +276,7 @@ void imprimirDedo(short dedo) {
 }
 
 void sleep(int value) {
-  boolean = true; done = false;
+  boolean done = false;
   int start = millis();
   while(done != true) {
     if(start - millis() > value) done = true;
