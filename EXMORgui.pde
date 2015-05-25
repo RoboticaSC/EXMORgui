@@ -13,17 +13,35 @@ import processing.serial.*;
 static Arduino arduino;
 static ControlP5 cp5;
 
+int[] p = new int[8];
+
 public class PFrame extends JFrame {
-  public PFrame() {
-    setBounds(0, 0, 400, 300);
-    additionalApplet a = new additionalApplet();
-    add(a);
-    a.init();
+  /**
+   * Constructor de la clase PFrame
+   *
+   * @name PFrame
+   * @param 
+   */
+  public PFrame(int frame) {
+    switch(frame) {
+      case 1:
+        setBounds(0, 0, 400, 300);
+        settingsApplet s = new settingsApplet();
+        add(s);
+        s.init();
+        break;
+      case 2:
+        setBounds(0, 0, 600, 400);
+        graphsApplet g = new graphsApplet();
+        add(g);
+        g.init();
+        break;
+    }
     show();
   }
 }
 
-public class additionalApplet extends PApplet {
+public class settingsApplet extends PApplet {
   ControlP5 comcp5;
 
   void setup() {
@@ -42,8 +60,8 @@ public class additionalApplet extends PApplet {
 
     DropdownList comLB = comcp5.addDropdownList("puertos")
       .setPosition(30, 65)
-      .setSize(200, 120
-)      .setBarHeight(30)
+      .setSize(200, 120)
+      .setBarHeight(30)
       .setItemHeight(30);
     comLB.captionLabel().style().marginTop = 10;
 
@@ -64,6 +82,18 @@ public class additionalApplet extends PApplet {
         chosenCOMIndex = (int)theEvent.group().value();
       }
     }
+  }
+
+}
+
+public class graphsApplet extends PApplet {
+
+  void setup() {
+
+  }
+
+  void loop() {
+    //point();
   }
 
 }
@@ -201,7 +231,9 @@ void controlEvent(ControlEvent theEvent) {
     } else if(controllerName == "menique2") {
       arduino.servoWrite(16, int(theEvent.controller().value()));
     } else if(controllerName == "opciones") { // Botón de opciones (rueda dentada)
-      PFrame f = new PFrame();
+      PFrame sett = new PFrame(1);
+    } else if(controllerName == "graficas") {
+      PFrame graph = new PFrame(2);
     }
   }
 }
@@ -215,8 +247,8 @@ void controlEvent(ControlEvent theEvent) {
 void imprimirDedo(short dedo) {
   int[] colors = { #FF312E, #104547, #000103, #191D32, #FFFFFA };
   String[] dedos = { "indice", "corazon", "anular", "menique" };
-  int p1 = 0;  // Valor potenciómetro índice 1; falange proximal (0-1023)
-  int p2 = 0;  // Valor potenciómetro índice 2; falange media (0-1023)
+  int p1 = 0;  // Valor potenciómetro falange proximal (0-1023)
+  int p2 = 0;  // Valor potenciómetro falange media (0-1023)
   int rx = 0, ry = 0, sx = 0, sy = 0;
   float alpha = 0, beta = 0;  // Ángulos (en radianes) de flexión de las falanges de cada dedo
 
@@ -231,7 +263,7 @@ void imprimirDedo(short dedo) {
   strokeWeight(30);
   stroke(colors[dedo], 160);
 
-  // Cálculo y muestra de la representación gráfica del dedo
+  // Cálculo y muestreo de la representación gráfica del dedo
   alpha = map(p1, 0, 1023, 0, 2 * PI);
   ry = int(sin(alpha) * 80);
   rx = int(cos(alpha) * 80);
@@ -240,4 +272,12 @@ void imprimirDedo(short dedo) {
   sy = int(sin(beta) * 80) + ry;
   sx = int(cos(beta) * 80) + rx;
   line(rx + 350, ry + 200, sx + 350, sy + 200);
+}
+
+void sleep(int value) {
+  boolean = true; done = false;
+  int start = millis();
+  while(done != true) {
+    if(start - millis() > value) done = true;
+  }
 }
