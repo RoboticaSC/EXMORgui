@@ -100,11 +100,31 @@ public class settingsApplet extends PApplet {
 }
 
 public class graphsApplet extends PApplet {
-
+  int time;
+  int i = 41;
+  int oldY = 320;
+  
   void setup() {
+    strokeWeight(3);
+    strokeCap(PROJECT);
+    time = millis();
+    strokeWeight(2);
+    strokeCap(ROUND);
+    smooth();
   }
 
   void draw() {
+    line(30, 330, 550, 330);  // Eje X
+    line(40, 30, 40, 340);  // Eje Y
+    
+    if(millis() >= time + 10) {
+      line(i - 1, oldY, i, mouseY);
+      println(i);
+      i++;
+      if(i > 549) { i = 41; background(100); }
+      time = millis();
+      oldY = mouseY;
+    }
   }
 
 }
