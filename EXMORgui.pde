@@ -18,6 +18,8 @@ ControlP5 cp5;
 
 int[] p = new int[8];
 
+int[] colors = { #FF312E, #104547, #000103, #191D32, #FFFFFA };
+
 public class PFrame extends JFrame {
 
   /**
@@ -161,42 +163,50 @@ void setup() {
   Slider ind1 = cp5.addSlider("indice1")
     .setPosition(10, 213)
     .setSize(200, 20)
-    .setRange(0, 180);
+    .setRange(0, 180)
+    .setColorForeground(colors[0]);
     
   Slider ind2 = cp5.addSlider("indice2")
     .setPosition(10, 243)
     .setSize(200, 20)
-    .setRange(0, 180);
+    .setRange(0, 180)
+    .setColorForeground(colors[0]);
 
   Slider cor1 = cp5.addSlider("corazon1")
     .setPosition(10, 273)
     .setSize(200, 20)
-    .setRange(0, 180);
+    .setRange(0, 180)
+    .setColorForeground(colors[1]);
     
   Slider cor2 = cp5.addSlider("corazon2")
     .setPosition(10, 303)
     .setSize(200, 20)
-    .setRange(0, 180);
+    .setRange(0, 180)
+    .setColorForeground(colors[1]);
 
   Slider anu1 = cp5.addSlider("anular1")
     .setPosition(10, 333)
     .setSize(200, 20)
-    .setRange(0, 180);
+    .setRange(0, 180)
+    .setColorForeground(colors[2]);
     
   Slider anu2 = cp5.addSlider("anular2")
     .setPosition(10, 363)
     .setSize(200, 20)
-    .setRange(0, 180);
+    .setRange(0, 180)
+    .setColorForeground(colors[2]);
 
   Slider men1 = cp5.addSlider("menique1")
     .setPosition(10, 393)
     .setSize(200, 20)
-    .setRange(0, 180);
+    .setRange(0, 180)
+    .setColorForeground(colors[3]);
     
   Slider men2 = cp5.addSlider("menique2")
     .setPosition(10, 423)
     .setSize(200, 20)
-    .setRange(0, 180);
+    .setRange(0, 180)
+    .setColorForeground(colors[3]);
 
   Button sett = cp5.addButton("opciones")
     .setPosition(628, 7)
@@ -285,7 +295,6 @@ void controlEvent(ControlEvent theEvent) {
   * @param dedo Número de 0 a 3, que representa el índice del dedo, siendo 0 el índice, y 3 el meñique
   */
 void imprimirDedo(short dedo) {
-  int[] colors = { #FF312E, #104547, #000103, #191D32, #FFFFFA };
   String[] dedos = { "indice", "corazon", "anular", "menique" };
   int p1 = 0;  // Valor potenciómetro falange proximal (0-1023)
   int p2 = 0;  // Valor potenciómetro falange media (0-1023)
@@ -294,7 +303,7 @@ void imprimirDedo(short dedo) {
 
   // Lectura de valores desde la Arduino
   p1 = arduino.analogRead(dedo * 2 + 1);
-  p2 = arduino.analogRead(dedo * 2 + 2);
+  p2 = arduino.analogRead(dedo * 2);
 
   cp5.getController(dedos[dedo] + "1").setValue(int(map(p1, 0, 1023, 0, 180)));
   cp5.getController(dedos[dedo] + "2").setValue(int(map(p2, 0, 1023, 0, 180)));
