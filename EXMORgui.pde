@@ -104,8 +104,9 @@ public class settingsApplet extends PApplet {
 
 public class graphsApplet extends PApplet {
   int lastTime;
-  int i = 41;
-  int oldY = 320;
+  int x = 41;
+  int[] oldY = { 320, 320, 320, 320 };
+  int avg = 0;
   
   void setup() {
     background(100);
@@ -126,17 +127,21 @@ public class graphsApplet extends PApplet {
     text("TIEMPO", 270, 350);
 
     if(millis() >= lastTime + 10) { // Comprueba que ya ha pasado el tiempo entre impresiones
-      // Impresión del tramo de la gráfica
-      stroke(#2B3A67);
-      strokeWeight(2);
-      strokeCap(ROUND);
-      line(i - 1, oldY, i, p[0]);
+      for(int m = 0; m < 4; m++) {
+        // Impresión del tramo de la gráfica
+        stroke(colors[m]);
+        strokeWeight(2);
+        strokeCap(ROUND);
+        avg = (p[m * 2] + p[m * 2 + 1]) / 2;
 
-      i++;
-      if(i > 549) { i = 41; background(100); } // La línea ha llegado al final de la gráfica
+        line(x - 1, oldY[m], x, (int)map(avg, 0, 1023, 330, 30));
 
-      lastTime = millis();
-      oldY = p[0];
+        x++;
+        if(x > 549) { x = 41; background(100); } // La línea ha llegado al final de la gráfica
+
+        lastTime = millis();
+        oldY[m] = (int)map(avg, 0, 1023, 330, 30);
+      }
     }
   }
 
