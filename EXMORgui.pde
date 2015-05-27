@@ -130,13 +130,13 @@ public class graphsApplet extends PApplet {
       stroke(#2B3A67);
       strokeWeight(2);
       strokeCap(ROUND);
-      line(i - 1, oldY, i, mouseY);
+      line(i - 1, oldY, i, p[0]);
 
       i++;
       if(i > 549) { i = 41; background(100); } // La línea ha llegado al final de la gráfica
 
       lastTime = millis();
-      oldY = mouseY;
+      oldY = p[0];
     }
   }
 
@@ -300,24 +300,26 @@ void imprimirDedo(short dedo) {
   int p2 = 0;  // Valor potenciómetro falange media (0-1023)
   int rx = 0, ry = 0, sx = 0, sy = 0;
   float alpha = 0, beta = 0;  // Ángulos (en radianes) de flexión de las falanges de cada dedo
+  int dedo1Index = dedo * 2 + 1;
+  int dedo2Index = dedo * 2;
 
   // Lectura de valores desde la Arduino
-  p1 = arduino.analogRead(dedo * 2 + 1);
-  p2 = arduino.analogRead(dedo * 2);
+  p[dedo1Index] = arduino.analogRead(dedo1Index);
+  p[dedo2Index] = arduino.analogRead(dedo2Index);
 
-  cp5.getController(dedos[dedo] + "1").setValue(int(map(p1, 0, 1023, 0, 180)));
-  cp5.getController(dedos[dedo] + "2").setValue(int(map(p2, 0, 1023, 0, 180)));
+  cp5.getController(dedos[dedo] + "1").setValue(int(map(p[dedo1Index], 0, 1023, 0, 180)));
+  cp5.getController(dedos[dedo] + "2").setValue(int(map(p[dedo2Index], 0, 1023, 0, 180)));
   // Mirar esto para el suavizado de las entradas: https://processing.org/examples/easing.html
 
   strokeWeight(30);
   stroke(colors[dedo], 160);
 
   // Cálculo y muestreo de la representación gráfica del dedo
-  alpha = map(p1, 0, 1023, 0, 2 * PI);
+  alpha = map(p[dedo1Index], 0, 1023, 0, 2 * PI);
   ry = int(sin(alpha) * 80);
   rx = int(cos(alpha) * 80);
   line(350, 200, rx + 350, ry + 200);
-  beta = map(p2, 0, 1023, 0, 2 * PI) + alpha;
+  beta = map(p[dedo2Index], 0, 1023, 0, 2 * PI) + alpha;
   sy = int(sin(beta) * 80) + ry;
   sx = int(cos(beta) * 80) + rx;
   line(rx + 350, ry + 200, sx + 350, sy + 200);
