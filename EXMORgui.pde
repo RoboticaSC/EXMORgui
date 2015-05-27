@@ -1,6 +1,9 @@
 // JFRAME - Permite tener múltiples ventanas
 import javax.swing.JFrame;
 
+// JAVA AWT EVENTS - Para detectar cuándo se ha cerrado una ventana
+import java.awt.event.*;
+
 // CONTROLP5 - Interfaces gráficas "prefabricadas" en Processing
 import controlP5.*;
 
@@ -9,8 +12,6 @@ import cc.arduino.*;
 
 // PROCESSING SERIAL - Requisito de la librería de Arduino (comunicación vía serial)
 import processing.serial.*;
-
-import java.awt.event.*;
 
 Arduino arduino;
 ControlP5 cp5;
@@ -39,7 +40,7 @@ public class PFrame extends JFrame {
         });
         break;
       case 2:
-        setBounds(0, 0, 600, 400);
+        setBounds(0, 0, 600, 430);
         final graphsApplet g = new graphsApplet();
         add(g);
         g.init();
@@ -100,29 +101,39 @@ public class settingsApplet extends PApplet {
 }
 
 public class graphsApplet extends PApplet {
-  int time;
+  int lastTime;
   int i = 41;
   int oldY = 320;
   
   void setup() {
-    strokeWeight(3);
-    strokeCap(PROJECT);
-    time = millis();
-    strokeWeight(2);
-    strokeCap(ROUND);
-    smooth();
+    background(100);
+    lastTime = millis();
+    textSize(14); 
   }
 
   void draw() {
+    smooth(8);
+    // Muestreo del marco de la gráfica
+    stroke(0);
+    strokeWeight(3);
     line(30, 330, 550, 330);  // Eje X
     line(40, 30, 40, 340);  // Eje Y
-    
-    if(millis() >= time + 10) {
+    rotate(PI);
+    text("ROTACIÓN", 0, 0);
+    rotate(-PI);
+    text("TIEMPO", 270, 350);
+
+    if(millis() >= lastTime + 10) { // Comprueba que ya ha pasado el tiempo entre impresiones
+      // Impresión del tramo de la gráfica
+      stroke(#2B3A67);
+      strokeWeight(2);
+      strokeCap(ROUND);
       line(i - 1, oldY, i, mouseY);
-      println(i);
+
       i++;
-      if(i > 549) { i = 41; background(100); }
-      time = millis();
+      if(i > 549) { i = 41; background(100); } // La línea ha llegado al final de la gráfica
+
+      lastTime = millis();
       oldY = mouseY;
     }
   }
@@ -139,7 +150,7 @@ int chosenCOMIndex = Arduino.list().length - 1; // Número de índice del array 
 void setup() {
   // Configuración incial de la ventana
   size(650, 460);
-  
+
   // Inicialización de la Arduino
   println("Arduino list: " + Arduino.list()[chosenCOMIndex]); // DEBUG
   arduino = new Arduino(this, Arduino.list()[chosenCOMIndex]);
@@ -301,19 +312,4 @@ void imprimirDedo(short dedo) {
   sy = int(sin(beta) * 80) + ry;
   sx = int(cos(beta) * 80) + rx;
   line(rx + 350, ry + 200, sx + 350, sy + 200);
-}
-
-/**
-  * Espera hasta que transcurra una determinada cantidad de segundos
-  *
-  * @name sleep
-  * @param value Valor en milisegundos de la espera
-  */
-void sleep(int value) {
-  boolean done = false;
-  int start = millis();
-  println("START: "+ start);
-  while(done != true) {
-    if(millis() - start > value) done = true;
-  }
 }
