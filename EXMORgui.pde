@@ -337,11 +337,11 @@ void draw() {
 
   image(loadImage("user.png"), 10, 50, 100, 123);
   textFont(OpenSans, 22);
-  text("Nombre Apellido Apellido", 120, 90);
+  text("Pablo Pérez Esteban", 120, 90);
   textSize(17);
   fill(150);
-  text("#123456", 130, 115);
-  text("Afección", 130, 135);
+  text("#014623", 130, 115);
+  text("Lesión de tendones extensores", 140, 135);
 
   stroke(0);
   fill(0);
