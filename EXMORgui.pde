@@ -134,6 +134,7 @@ public class graphsApplet extends PApplet {
   int x = 41;
   int[] oldY = { 320, 320, 320, 320 };
   int avg = 0;
+  float mapped = 0;
   
   void setup() {
     background(100);
@@ -160,14 +161,15 @@ public class graphsApplet extends PApplet {
         strokeWeight(2);
         strokeCap(ROUND);
         avg = (p[m * 2] + p[m * 2 + 1]) / 2;
+        mapped = map(avg, min[m], max[m], 330, 30);
 
-        line(x - 1, oldY[m], x, (int)map(avg, 0, 1023, 330, 30));
+        line(x - 1, oldY[m], x, (int)mapped);
 
         x++;
         if(x > 549) { x = 41; background(100); } // La línea ha llegado al final de la gráfica
 
         lastTime = millis();
-        oldY[m] = (int)map(avg, 0, 1023, 330, 30);
+        oldY[m] = (int)mapped;
       }
     }
   }
